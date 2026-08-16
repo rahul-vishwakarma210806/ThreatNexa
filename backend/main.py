@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from services.url_analyzer import extract_url_features
 from services.risk_engine import calculate_risk
 from services.ml_predictor import predict_url
+from services.decision_engine import make_final_decision
 
 
 app = FastAPI(title="ThreatNexa API")
@@ -28,6 +29,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 # ============================================================
 # REQUEST MODEL
@@ -89,7 +91,17 @@ def analyze_url(request: URLRequest):
 
 
     # --------------------------------------------------------
-    # 4. Return complete analysis
+    # 4. Final decision
+    # --------------------------------------------------------
+
+    final_decision = make_final_decision(
+        risk,
+        ml_analysis
+    )
+
+
+    # --------------------------------------------------------
+    # 5. Return complete analysis
     # --------------------------------------------------------
 
     return {
@@ -99,6 +111,8 @@ def analyze_url(request: URLRequest):
         "risk": risk,
 
         "ml_analysis": ml_analysis,
+
+        "final_decision": final_decision,
 
         "features": features
     }
