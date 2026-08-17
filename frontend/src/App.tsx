@@ -8,6 +8,23 @@ interface RiskResult {
   positive_signals: string[];
 }
 
+interface MLAnalysis {
+  prediction: string;
+  phishing_probability: number;
+  legitimate_probability: number;
+}
+
+interface FinalDecision {
+  final_score: number;
+  final_level: string;
+  verdict: string;
+  rule_score: number;
+  rule_level: string;
+  ml_prediction: string;
+  ml_phishing_probability: number;
+  explanation: string[];
+}
+
 interface Features {
   url: string;
   url_length: number;
@@ -28,15 +45,21 @@ interface AnalysisResult {
   url: string;
   status: string;
   risk: RiskResult;
+  ml_analysis: MLAnalysis;
+  final_decision: FinalDecision;
   features: Features;
 }
-
+interface ScanHistoryItem {
+  url: string;
+  score: number;
+  level: string;
+}
 function App() {
   const [url, setUrl] = useState("");
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+  const [scanHistory, setScanHistory] = useState<ScanHistoryItem[]>([]);
   const handleAnalyze = async () => {
     if (url.trim() === "") {
       setError("Please enter a URL first.");
@@ -69,6 +92,14 @@ function App() {
       const data: AnalysisResult = await response.json();
 
       setResult(data);
+setScanHistory((previous) => [
+  {
+    url: data.url,
+    score: data.final_decision.final_score,
+    level: data.final_decision.final_level,
+  },
+  ...previous,
+].slice(0, 5));
     } catch (error) {
       console.error(error);
       setError("Could not connect to ThreatNexa backend.");
@@ -129,7 +160,7 @@ function App() {
               onClick={handleAnalyze}
               disabled={loading}
             >
-              {loading ? "Analyzing..." : "Analyze URL"}
+              {loading ? "scanning..." : "Analyze URL"}
             </button>
 
           </div>
@@ -157,21 +188,106 @@ function App() {
                 {result.url}
               </p>
 
-              {/* RISK SCORE */}
-              <div className="risk-section">
+              {/* ================================================= */}
+              {/* FINAL DECISION */}
+              {/* ================================================= */}
 
-                <div className="risk-score">
-                  {result.risk.risk_score}
+              <div
+                className={`final-decision ${result.final_decision.final_level.toLowerCase()}`}
+              >
+
+                <p className="section-label">
+                  FINAL SECURITY VERDICT
+                </p>
+
+                <div className="final-score">
+                  {result.final_decision.final_score}
                   <span>/100</span>
                 </div>
 
-                <div className="risk-level">
-                  {result.risk.risk_level} RISK
+                <h3>
+                  {result.final_decision.verdict}
+                </h3>
+
+                <p>
+                  ThreatNexa combines rule-based analysis and
+                  machine-learning prediction to produce this
+                  final result.
+                </p>
+
+              </div>
+
+              {/* ================================================= */}
+              {/* ML ANALYSIS */}
+              {/* ================================================= */}
+
+              <div className="analysis-section">
+
+                <h3>
+                  🤖 Machine Learning Analysis
+                </h3>
+
+                <div className="ml-result">
+
+                  <div className="ml-item">
+                    <span>Prediction</span>
+                    <strong>
+                      {result.ml_analysis.prediction}
+                    </strong>
+                  </div>
+
+                  <div className="ml-item">
+                    <span>Phishing Probability</span>
+                    <strong>
+                      {result.ml_analysis.phishing_probability}%
+                    </strong>
+                  </div>
+
+                  <div className="ml-item">
+                    <span>Legitimate Probability</span>
+                    <strong>
+                      {result.ml_analysis.legitimate_probability}%
+                    </strong>
+                  </div>
+
                 </div>
 
               </div>
 
-              {/* REASONS */}
+              {/* ================================================= */}
+              {/* RULE ENGINE */}
+              {/* ================================================= */}
+
+              <div className="analysis-section">
+
+                <h3>
+                  🛡️ Rule-Based Analysis
+                </h3>
+
+                <div className="ml-result">
+
+                  <div className="ml-item">
+                    <span>Rule Score</span>
+                    <strong>
+                      {result.final_decision.rule_score}/100
+                    </strong>
+                  </div>
+
+                  <div className="ml-item">
+                    <span>Rule Risk Level</span>
+                    <strong>
+                      {result.final_decision.rule_level}
+                    </strong>
+                  </div>
+
+                </div>
+
+              </div>
+
+              {/* ================================================= */}
+              {/* RISK FACTORS */}
+              {/* ================================================= */}
+
               <div className="analysis-section">
 
                 <h3>
@@ -195,7 +311,10 @@ function App() {
 
               </div>
 
+              {/* ================================================= */}
               {/* POSITIVE SIGNALS */}
+              {/* ================================================= */}
+
               <div className="analysis-section">
 
                 <h3>
@@ -220,7 +339,10 @@ function App() {
 
               </div>
 
+              {/* ================================================= */}
               {/* URL FEATURES */}
+              {/* ================================================= */}
+
               <div className="analysis-section">
 
                 <h3>
@@ -295,7 +417,10 @@ function App() {
 
               </div>
 
+              {/* ================================================= */}
               {/* DETECTED KEYWORDS */}
+              {/* ================================================= */}
+
               {result.features.suspicious_keywords.length > 0 && (
                 <div className="analysis-section">
 

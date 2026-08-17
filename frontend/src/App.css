@@ -1,3 +1,8 @@
+```css
+/* ============================================================
+   THREATNEXA - GLOBAL
+============================================================ */
+
 * {
   box-sizing: border-box;
 }
@@ -32,13 +37,18 @@ input {
   font: inherit;
 }
 
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
 .app {
   min-height: 100vh;
 }
 
-/* =========================
+
+/* ============================================================
    NAVBAR
-========================= */
+============================================================ */
 
 .navbar {
   height: 72px;
@@ -49,15 +59,15 @@ input {
 
   padding: 0 8%;
 
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-
-  background: rgba(8, 11, 18, 0.75);
-
-  backdrop-filter: blur(14px);
-
   position: sticky;
   top: 0;
   z-index: 100;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  background: rgba(8, 11, 18, 0.78);
+
+  backdrop-filter: blur(14px);
 }
 
 .logo {
@@ -73,6 +83,7 @@ nav {
 
 nav a {
   color: #aeb6c7;
+
   text-decoration: none;
 
   font-size: 14px;
@@ -83,15 +94,17 @@ nav a {
 }
 
 nav a:hover {
-  color: white;
+  color: #ffffff;
+  transform: translateY(-1px);
 }
 
-/* =========================
+
+/* ============================================================
    HERO
-========================= */
+============================================================ */
 
 .hero {
-  max-width: 1000px;
+  max-width: 1200px;
 
   margin: 0 auto;
 
@@ -135,9 +148,10 @@ h1 {
   line-height: 1.6;
 }
 
-/* =========================
-   SCANNER
-========================= */
+
+/* ============================================================
+   URL SCANNER
+============================================================ */
 
 .scanner {
   max-width: 760px;
@@ -183,7 +197,7 @@ h1 {
 
   background: transparent;
 
-  color: white;
+  color: #ffffff;
 
   padding: 16px;
 
@@ -203,7 +217,7 @@ h1 {
 
   background: #7c3aed;
 
-  color: white;
+  color: #ffffff;
 
   font-weight: 700;
 
@@ -222,14 +236,35 @@ h1 {
 }
 
 .scanner button:disabled {
-  opacity: 0.65;
+  opacity: 0.7;
 
-  cursor: not-allowed;
+  cursor: wait;
 }
 
-/* =========================
+.scanner button:disabled::after {
+  content: " ...";
+
+  animation: scanningDots 1.2s infinite;
+}
+
+@keyframes scanningDots {
+  0% {
+    opacity: 0.2;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.2;
+  }
+}
+
+
+/* ============================================================
    ERROR
-========================= */
+============================================================ */
 
 .error-message {
   max-width: 760px;
@@ -251,12 +286,13 @@ h1 {
   font-size: 14px;
 }
 
-/* =========================
+
+/* ============================================================
    RESULT CARD
-========================= */
+============================================================ */
 
 .result-card {
-  max-width: 900px;
+  max-width: 1100px;
 
   margin: 55px auto 0;
 
@@ -311,79 +347,223 @@ h1 {
   line-height: 1.6;
 }
 
-/* =========================
-   RISK SECTION
-========================= */
 
-.risk-section {
+/* ============================================================
+   FINAL SECURITY VERDICT
+============================================================ */
+
+.final-decision {
+  position: relative;
+
+  overflow: hidden;
+
   margin-top: 30px;
 
-  padding: 28px;
+  padding: 30px;
 
-  display: flex;
+  border-radius: 18px;
 
-  align-items: center;
+  border: 1px solid #333;
 
-  justify-content: center;
-
-  flex-direction: column;
-
-  gap: 10px;
-
-  border: 1px solid rgba(255, 255, 255, 0.08);
-
-  border-radius: 16px;
-
-  background: rgba(255, 255, 255, 0.02);
+  background: #111;
 
   text-align: center;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
 }
 
-.risk-score {
-  font-size: 64px;
+.final-decision:hover {
+  transform: translateY(-2px);
+}
+
+.final-decision::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 4px;
+}
+
+.final-decision.low {
+  border-color: #2e7d32;
+
+  background: rgba(46, 125, 50, 0.12);
+
+  box-shadow:
+    0 0 0 1px rgba(76, 175, 80, 0.08),
+    0 15px 40px rgba(76, 175, 80, 0.08);
+}
+
+.final-decision.low::before {
+  background: #4caf50;
+}
+
+.final-decision.medium {
+  border-color: #f9a825;
+
+  background: rgba(249, 168, 37, 0.12);
+
+  box-shadow:
+    0 0 0 1px rgba(255, 193, 7, 0.08),
+    0 15px 40px rgba(255, 193, 7, 0.08);
+}
+
+.final-decision.medium::before {
+  background: #ffc107;
+}
+
+.final-decision.high {
+  border-color: #d32f2f;
+
+  background: rgba(211, 47, 47, 0.14);
+
+  box-shadow:
+    0 0 0 1px rgba(255, 82, 82, 0.12),
+    0 15px 45px rgba(255, 82, 82, 0.12);
+}
+
+.final-decision.high::before {
+  background: #ff5252;
+}
+
+
+/* ============================================================
+   FINAL VERDICT TEXT
+============================================================ */
+
+.final-decision .section-label {
+  margin: 0 0 12px;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+  letter-spacing: 2px;
+
+  color: #aaa;
+}
+
+.final-decision .final-score {
+  margin: 12px 0;
+
+  font-size: 56px;
 
   font-weight: 800;
 
   line-height: 1;
 
-  letter-spacing: -3px;
+  text-shadow: 0 0 25px currentColor;
 }
 
-.risk-score span {
+.final-decision .final-score span {
   margin-left: 5px;
-
-  color: #687386;
 
   font-size: 20px;
 
   font-weight: 500;
 
-  letter-spacing: 0;
+  color: #888;
+
+  text-shadow: none;
 }
 
-.risk-level {
-  display: inline-block;
+.final-decision h3 {
+  margin: 12px 0;
 
-  padding: 7px 14px;
+  font-size: 26px;
+}
+
+.final-decision p:last-child {
+  margin: 0;
+
+  color: #aaa;
+
+  line-height: 1.6;
+}
+
+.final-decision.low .final-score,
+.final-decision.low h3 {
+  color: #4caf50;
+}
+
+.final-decision.medium .final-score,
+.final-decision.medium h3 {
+  color: #ffc107;
+}
+
+.final-decision.high .final-score,
+.final-decision.high h3 {
+  color: #ff5252;
+}
+
+
+/* ============================================================
+   RISK METER
+============================================================ */
+
+.risk-meter {
+  width: 100%;
+
+  max-width: 650px;
+
+  height: 12px;
+
+  margin: 20px auto 0;
+
+  overflow: hidden;
 
   border-radius: 999px;
 
-  background: rgba(34, 197, 94, 0.12);
+  background: rgba(255, 255, 255, 0.08);
 
-  border: 1px solid rgba(34, 197, 94, 0.25);
-
-  color: #86efac;
-
-  font-size: 12px;
-
-  font-weight: 800;
-
-  letter-spacing: 1px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* =========================
+.risk-meter-fill {
+  height: 100%;
+
+  border-radius: 999px;
+
+  transition:
+    width 0.8s ease,
+    background 0.4s ease;
+
+  box-shadow:
+    0 0 14px rgba(255, 255, 255, 0.2);
+}
+
+.final-decision.low .risk-meter-fill {
+  background: #4caf50;
+
+  box-shadow:
+    0 0 14px rgba(76, 175, 80, 0.5);
+}
+
+.final-decision.medium .risk-meter-fill {
+  background: #ffc107;
+
+  box-shadow:
+    0 0 14px rgba(255, 193, 7, 0.5);
+}
+
+.final-decision.high .risk-meter-fill {
+  background: #ff5252;
+
+  box-shadow:
+    0 0 14px rgba(255, 82, 82, 0.5);
+}
+
+
+/* ============================================================
    ANALYSIS SECTIONS
-========================= */
+============================================================ */
 
 .analysis-section {
   margin-top: 24px;
@@ -398,6 +578,12 @@ h1 {
 }
 
 .analysis-section h3 {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
   margin: 0 0 16px;
 
   font-size: 16px;
@@ -431,19 +617,81 @@ h1 {
   line-height: 1.6;
 }
 
-/* =========================
+
+/* ============================================================
+   MACHINE LEARNING RESULT
+============================================================ */
+
+.ml-result {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 14px;
+
+  margin-top: 18px;
+}
+
+.ml-item {
+  padding: 18px;
+
+  border-radius: 12px;
+
+  background: rgba(255, 255, 255, 0.04);
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.ml-item:hover {
+  transform: translateY(-2px);
+
+  border-color: rgba(124, 58, 237, 0.35);
+
+  background: rgba(124, 58, 237, 0.06);
+}
+
+.ml-item span {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: #999;
+
+  font-size: 13px;
+}
+
+.ml-item strong {
+  display: block;
+
+  font-size: 18px;
+}
+
+
+/* ============================================================
    FEATURES GRID
-========================= */
+============================================================ */
 
 .features-grid {
   display: grid;
 
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
 
   gap: 10px;
 }
 
 .feature {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+
   padding: 16px;
 
   border-radius: 11px;
@@ -451,12 +699,6 @@ h1 {
   background: #0c111a;
 
   border: 1px solid rgba(255, 255, 255, 0.06);
-
-  display: flex;
-
-  flex-direction: column;
-
-  gap: 7px;
 }
 
 .feature span {
@@ -477,9 +719,10 @@ h1 {
   word-break: break-word;
 }
 
-/* =========================
-   KEYWORDS
-========================= */
+
+/* ============================================================
+   DETECTED KEYWORDS
+============================================================ */
 
 .keyword-list {
   display: flex;
@@ -509,9 +752,56 @@ h1 {
   font-weight: 600;
 }
 
-/* =========================
+
+/* ============================================================
+   SCAN AGAIN
+============================================================ */
+
+.scan-again-button {
+  display: block;
+
+  width: 100%;
+
+  margin-top: 24px;
+
+  padding: 14px 20px;
+
+  border: 1px solid rgba(124, 58, 237, 0.45);
+
+  border-radius: 12px;
+
+  background: rgba(124, 58, 237, 0.12);
+
+  color: #c4b5fd;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.scan-again-button:hover {
+  background: rgba(124, 58, 237, 0.22);
+
+  border-color: #7c3aed;
+
+  transform: translateY(-1px);
+}
+
+.scan-again-button:active {
+  transform: translateY(0);
+}
+
+
+/* ============================================================
    MOBILE
-========================= */
+============================================================ */
 
 @media (max-width: 700px) {
   .navbar {
@@ -546,6 +836,8 @@ h1 {
   }
 
   .scanner button {
+    min-height: 48px;
+
     padding: 14px;
   }
 
@@ -555,11 +847,28 @@ h1 {
     border-radius: 16px;
   }
 
-  .risk-score {
-    font-size: 54px;
+  .final-decision {
+    padding: 22px 18px;
+  }
+
+  .final-decision .final-score {
+    font-size: 44px;
   }
 
   .features-grid {
     grid-template-columns: 1fr;
   }
+
+  .ml-result {
+    grid-template-columns: 1fr;
+  }
+
+  .ml-item {
+    padding: 16px;
+  }
+
+  .risk-meter {
+    height: 10px;
+  }
 }
+```
